@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css" integrity="sha512-fzA+tLgtwjys8FSpEdAGGamBJiWnHCwSkEu5P3EGr73U8AFnOSE1kzI6+RSYvf4zIs5BPWVrdzygD+nvZKbxIg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <h1>Работа с файлами</h1>
+  <h2>JSON to YAML</h2>
+  <input class="upload" type="file">
+  <script src="https://cdn.jsdelivr.net/npm/yamljs@0.3.0/dist/yaml.min.js"></script>
+  <script>
+    const upload = document.querySelector('.upload');
+
+    upload.addEventListener('input', (event) => {
+      const target = event.target;
+
+      const files = target.files;
+
+      if (!files) {
+        return;
+      }
+
+      const file = files[0];
+
+      if (!file) {
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.addEventListener('load', (readEvent) => {
+        const content = readEvent.currentTarget.result;
+        const data = JSON.parse(content);
+
+        const yaml = YAML.stringify(data);
+
+        const blob = new Blob([yaml], {
+          type: 'application/x-yaml'
+        });
+
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+
+        link.setAttribute('download', 'result.yml');
+        link.setAttribute('href', url);
+        document.body.appendChild(link);
+        link.dispatchEvent(new MouseEvent('click'));
+
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+
+          link.remove();
+        }, 1000);
+      });
+
+      reader.readAsText(file);
+    });
+</script>
+</body>
+</html>

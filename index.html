@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css" integrity="sha512-fzA+tLgtwjys8FSpEdAGGamBJiWnHCwSkEu5P3EGr73U8AFnOSE1kzI6+RSYvf4zIs5BPWVrdzygD+nvZKbxIg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <h1>Работа с файлами</h1>
+  <h2>Таблица</h2>
+  <input class="upload" type="file">
+  <div class="table-view"></div>
+
+  <script>
+    const upload = document.querySelector('.upload');
+    const tableView = document.querySelector('.table-view');
+
+    function renderTable(tableData) {
+      const table = document.createElement('table');
+      const tBody = document.createElement('tbody');
+
+      table.appendChild(tBody);
+
+      for(const row of tableData) {
+        const tr = document.createElement('tr');
+
+        for (const cell of row) {
+          const td = document.createElement('td');
+
+          td.textContent = cell;
+
+          tr.appendChild(td);
+        }
+
+        tBody.appendChild(tr);
+      }
+
+      return table;
+    }
+
+    upload.addEventListener('input', (event) => {
+      console.log('input');
+      const target = event.target;
+
+      const files = target.files;
+
+      if (!files) {
+        return;
+      }
+
+      const file = files[0];
+
+      if (!file) {
+        return;
+      }
+
+      console.log(file.name);
+
+      const reader = new FileReader();
+
+      reader.addEventListener('load', (readEvent) => {
+        const content = readEvent.currentTarget.result;
+        const table = content.trim().split('\n').map(stringRow => stringRow.split(','));
+
+        console.log(content);
+        console.log(table);
+
+        tableView.textContent = '';
+        tableView.appendChild(renderTable(table));
+      });
+
+      reader.readAsText(file);
+    });
+</script>
+</body>
+</html>

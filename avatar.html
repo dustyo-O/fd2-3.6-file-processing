@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css" integrity="sha512-fzA+tLgtwjys8FSpEdAGGamBJiWnHCwSkEu5P3EGr73U8AFnOSE1kzI6+RSYvf4zIs5BPWVrdzygD+nvZKbxIg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    .avatar-widget {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 150px;
+      border: 2px lightblue dashed;
+
+      border-radius: 20px;
+      color: lightblue;
+      cursor: pointer;
+
+      font-size: 24px;
+    }
+
+    .avatar-control {
+      position: absolute;
+
+      top: -10000px;
+      left: -10000px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Работа с файлами</h1>
+  <h2>Аватарка</h2>
+  <div class="avatar-widget">
+    Click to upload
+    <input class="avatar-control" type="file">
+  </div>
+  <div class="avatar-preview"></div>
+
+  <script>
+    const avatarWidget = document.querySelector('.avatar-widget');
+    const avatarControl = avatarWidget.querySelector('.avatar-control');
+    const avatarPreview = document.querySelector('.avatar-preview');
+
+    function handleFiles(files) {
+      if (!files) {
+        return;
+      }
+
+      const file = files[0];
+
+      if (!file) {
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.addEventListener('load', (readEvent) => {
+        const content = readEvent.currentTarget.result;
+
+        const image = document.createElement('img');
+        image.src = content;
+
+        avatarPreview.textContent = '';
+        avatarPreview.appendChild(image);
+      });
+
+      reader.readAsDataURL(file);
+    }
+
+    avatarWidget.addEventListener('click', (event) => {
+      const target = event.target;
+      control = target.querySelector('.avatar-control');
+
+      control.dispatchEvent(new MouseEvent('click'));
+    });
+
+    avatarWidget.addEventListener('drop', (event) => {
+      event.preventDefault();
+
+      handleFiles(event.dataTransfer.files);
+    });
+
+    avatarWidget.addEventListener('dragover', (event) => {
+      event.preventDefault();
+    });
+
+    avatarControl.addEventListener('input', (event) => {
+      const target = event.target;
+
+      handleFiles(target.files)
+    });
+</script>
+</body>
+</html>
